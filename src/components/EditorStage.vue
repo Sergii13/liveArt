@@ -144,7 +144,7 @@ function applyCrop() {
         </VTooltip>
       </VCardActions>
 
-      <VCardActions v-else class="px-4 py-2">
+      <VCardActions v-else class="px-4 py-2 flex-nowrap" style="overflow-x: auto">
         <VTooltip text="Change image" location="top">
           <template #activator="{ props }">
             <VBtn v-bind="props" icon="mdi-image-refresh-outline" variant="text" @click="changeImageDialog.open()" />
