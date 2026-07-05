@@ -1,11 +1,18 @@
+import { ref } from 'vue'
 import { useEditorStore } from '../stores/editor'
 import { loadImage } from '../utils/image'
 
-function triggerDownload(href: string, filename: string) {
+function canvasToBlob(canvas: HTMLCanvasElement, type: string): Promise<Blob | null> {
+  return new Promise((resolve) => canvas.toBlob(resolve, type))
+}
+
+function downloadBlob(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob)
   const anchor = document.createElement('a')
-  anchor.href = href
+  anchor.href = url
   anchor.download = filename
   anchor.click()
+  setTimeout(() => URL.revokeObjectURL(url), 0)
 }
 
 function stripExtension(name: string): string {
@@ -15,6 +22,7 @@ function stripExtension(name: string): string {
 
 export function useExport() {
   const editorStore = useEditorStore()
+  const isExporting = ref(false)
 
   async function renderCanvas(): Promise<HTMLCanvasElement | null> {
     const source = editorStore.source
@@ -40,9 +48,19 @@ export function useExport() {
   }
 
   async function exportImage() {
-    const canvas = await renderCanvas()
-    if (!canvas || !editorStore.source) return
-    triggerDownload(canvas.toDataURL('image/png'), `${stripExtension(editorStore.source.name)}.png`)
+    const source = editorStore.source
+    if (!source) return
+
+    isExporting.value = true
+    try {
+      const canvas = await renderCanvas()
+      if (!canvas) return
+      const blob = await canvasToBlob(canvas, 'image/png')
+      if (!blob) return
+      downloadBlob(blob, `${stripExtension(source.name)}.png`)
+    } finally {
+      isExporting.value = false
+    }
   }
 
   function exportJson() {
@@ -64,10 +82,8 @@ export function useExport() {
     }
 
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    triggerDownload(url, `${stripExtension(source.name)}.json`)
-    URL.revokeObjectURL(url)
+    downloadBlob(blob, `${stripExtension(source.name)}.json`)
   }
 
-  return { exportImage, exportJson }
+  return { exportImage, exportJson, isExporting }
 }

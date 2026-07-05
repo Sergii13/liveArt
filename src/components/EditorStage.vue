@@ -13,7 +13,7 @@ import CropStage from './CropStage.vue'
 const editorStore = useEditorStore()
 const { source, editDocument, hasImage, isModified, filterString } = storeToRefs(editorStore)
 const { notify } = useNotificationStore()
-const { exportImage, exportJson } = useExport()
+const { exportImage, exportJson, isExporting } = useExport()
 const { loadImageFile } = useLoadImageFile()
 const { previewSrc } = useCroppedPreview()
 
@@ -160,7 +160,14 @@ function applyCrop() {
         </VTooltip>
         <VTooltip text="Export image" location="top">
           <template #activator="{ props }">
-            <VBtn v-bind="props" icon="mdi-download" color="primary" variant="tonal" @click="exportImage()" />
+            <VBtn
+              v-bind="props"
+              icon="mdi-download"
+              color="primary"
+              variant="tonal"
+              :loading="isExporting"
+              @click="exportImage()"
+            />
           </template>
         </VTooltip>
       </VCardActions>
