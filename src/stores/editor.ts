@@ -24,6 +24,7 @@ export const useEditorStore = defineStore('editor', () => {
   const redoStack = ref<EditDocument[]>([])
 
   let isStroking = false
+  let strokeSnapshot: EditDocument | null = null
 
   const hasImage = computed(() => source.value !== null)
   const canUndo = computed(() => undoStack.value.length > 0)
@@ -45,21 +46,33 @@ export const useEditorStore = defineStore('editor', () => {
     () => !isEqual(editDocument.value, createEmptyEditDocument()),
   )
 
-  function snapshot() {
-    undoStack.value.push(cloneDeep(editDocument.value))
+  function pushHistory(state: EditDocument) {
+    undoStack.value.push(state)
     if (undoStack.value.length > HISTORY_LIMIT) {
       undoStack.value.shift()
     }
     redoStack.value = []
   }
 
+  function snapshot() {
+    if (isStroking) {
+      if (strokeSnapshot) {
+        pushHistory(strokeSnapshot)
+        strokeSnapshot = null
+      }
+      return
+    }
+    pushHistory(cloneDeep(editDocument.value))
+  }
+
   function beginStroke() {
-    snapshot()
+    strokeSnapshot = cloneDeep(editDocument.value)
     isStroking = true
   }
 
   function endStroke() {
     isStroking = false
+    strokeSnapshot = null
   }
 
   function undo() {
@@ -88,21 +101,26 @@ export const useEditorStore = defineStore('editor', () => {
   }
 
   function setCrop(crop: CropRect | null) {
+    if (isEqual(editDocument.value.crop, crop)) {
+      return
+    }
     snapshot()
     editDocument.value.crop = crop
   }
 
   function setAdjustment<K extends keyof Adjustments>(key: K, value: number) {
-    if (!isStroking) {
-      snapshot()
+    if (editDocument.value.adjustments[key] === value) {
+      return
     }
+    snapshot()
     editDocument.value.adjustments[key] = value
   }
 
   function setFilter<K extends keyof FilterValues>(key: K, value: number) {
-    if (!isStroking) {
-      snapshot()
+    if (editDocument.value.filters[key] === value) {
+      return
     }
+    snapshot()
     editDocument.value.filters[key] = value
   }
 
