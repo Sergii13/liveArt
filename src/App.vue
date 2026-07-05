@@ -18,7 +18,7 @@ const drawer = ref(true)
       <FilterPanel />
     </VNavigationDrawer>
 
-    <VMain class="h-screen">
+    <VMain class="h-screen" style="min-height: 400px">
       <VContainer fluid class="pa-4 fill-height align-stretch d-flex">
         <EditorStage />
       </VContainer>

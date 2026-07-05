@@ -47,7 +47,6 @@ importDialog.onChange(async (files) => {
     title="Image setup"
     prepend-icon="mdi-image-edit-outline"
     variant="flat"
-    class="d-flex flex-column h-100"
   >
     <VCardText>
       <template v-for="control in adjustments" :key="control.key">
