@@ -1,6 +1,6 @@
 import { useEditorStore } from '../stores/editor'
 import { settingsFileSchema } from '../schemas/editDocument'
-import { documentFromSettingsFile } from '../utils/editDocument'
+import { clampCropToImage, documentFromSettingsFile } from '../utils/editDocument'
 
 export type ImportResult = { ok: true } | { ok: false; error: string }
 
@@ -31,7 +31,12 @@ export function useImport() {
           return
         }
 
-        editorStore.loadDocument(documentFromSettingsFile(parsed.data))
+        const doc = documentFromSettingsFile(parsed.data)
+        const source = editorStore.source
+        if (source) {
+          doc.crop = clampCropToImage(doc.crop, source.width, source.height)
+        }
+        editorStore.loadDocument(doc)
         resolve({ ok: true })
       }
 
