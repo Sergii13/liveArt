@@ -25,7 +25,7 @@ const filters: { key: FilterName; label: string; icon: string }[] = [
   { key: 'sepia', label: 'Sepia', icon: 'mdi-image-filter-vintage' },
 ]
 
-const importDialog = useFileDialog({ accept: 'application/json', multiple: false })
+const importDialog = useFileDialog({ accept: 'application/json', multiple: false, reset: true })
 
 importDialog.onChange(async (files) => {
   const file = files?.[0]

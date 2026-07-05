@@ -20,7 +20,7 @@ const { previewSrc } = useCroppedPreview()
 const isCropping = ref(false)
 const cropStageRef = ref<InstanceType<typeof CropStage> | null>(null)
 
-const changeImageDialog = useFileDialog({ accept: 'image/*', multiple: false })
+const changeImageDialog = useFileDialog({ accept: 'image/*', multiple: false, reset: true })
 
 changeImageDialog.onChange((files) => {
   const file = files?.[0]
