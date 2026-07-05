@@ -18,11 +18,14 @@ export const filterValuesSchema = z.object({
   sepia: z.number().min(0).max(1),
 })
 
-export const editDocumentSchema = z.object({
-  version: z.number(),
+export const operationsSchema = z.object({
   crop: cropRectSchema.nullable(),
   adjustments: adjustmentsSchema,
   filters: filterValuesSchema,
+})
+
+export const editDocumentSchema = operationsSchema.extend({
+  version: z.number(),
 })
 
 export const settingsFileSchema = z.object({
@@ -34,11 +37,7 @@ export const settingsFileSchema = z.object({
       height: z.number(),
     })
     .optional(),
-  operations: z.object({
-    crop: cropRectSchema.nullable(),
-    adjustments: adjustmentsSchema,
-    filters: filterValuesSchema,
-  }),
+  operations: operationsSchema,
 })
 
 export type CropRect = z.infer<typeof cropRectSchema>
