@@ -40,7 +40,10 @@ watch(() => previewSrc.value, zoomFit)
 
 changeImageDialog.onChange((files) => {
   const file = files?.[0]
-  if (file) loadImageFile(file)
+  if (!file) {
+    return
+  }
+  loadImageFile(file)
 })
 
 function zoomBy(factor: number) {

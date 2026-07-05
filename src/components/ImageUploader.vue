@@ -5,7 +5,10 @@ const { loadImageFile } = useLoadImageFile()
 
 function handleFile(value: File | File[] | null) {
   const file = Array.isArray(value) ? value[0] : value
-  if (file) loadImageFile(file)
+  if (!file) {
+    return
+  }
+  loadImageFile(file)
 }
 </script>
 

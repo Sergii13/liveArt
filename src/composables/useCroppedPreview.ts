@@ -36,7 +36,9 @@ export function useCroppedPreview() {
       }
 
       const image = await loadImage(source.src)
-      if (id !== requestId) return
+      if (id !== requestId) {
+        return
+      }
 
       const canvas = document.createElement('canvas')
       canvas.width = crop.width
@@ -49,7 +51,9 @@ export function useCroppedPreview() {
       ctx.drawImage(image, crop.x, crop.y, crop.width, crop.height, 0, 0, crop.width, crop.height)
 
       const blob = await canvasToBlob(canvas)
-      if (id !== requestId) return
+      if (id !== requestId) {
+        return
+      }
       if (!blob) {
         setPreview(source.src)
         return

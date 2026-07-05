@@ -28,12 +28,17 @@ const filters: { key: FilterName; label: string; icon: string }[] = [
 
 importDialog.onChange(async (files) => {
   const file = files?.[0]
-  if (!file) return
+  if (!file) {
+    return
+  }
 
   importError.value = null
   const result = await importSettings(file)
-  if (result.ok) notify('Settings loaded successfully', 'success')
-  else importError.value = result.error
+  if (result.ok) {
+    notify('Settings loaded successfully', 'success')
+  } else {
+    importError.value = result.error
+  }
 })
 </script>
 

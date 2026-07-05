@@ -13,7 +13,9 @@ const imageRef = ref<HTMLImageElement | null>(null)
 let cropper: Cropper | null = null
 
 onMounted(() => {
-  if (!imageRef.value) return
+  if (!imageRef.value) {
+    return
+  }
   cropper = new Cropper(imageRef.value, {
     viewMode: 1,
     autoCropArea: 1,
@@ -33,7 +35,9 @@ onBeforeUnmount(() => {
 })
 
 function getCropRect(): CropRect | null {
-  if (!cropper) return null
+  if (!cropper) {
+    return null
+  }
   const { x, y, width, height } = cropper.getData(true)
   return { x, y, width, height }
 }

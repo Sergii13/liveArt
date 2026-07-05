@@ -28,13 +28,17 @@ export function clampCropToImage(
   imageWidth: number,
   imageHeight: number,
 ): CropRect | null {
-  if (!crop) return null
+  if (!crop) {
+    return null
+  }
 
   const x = Math.min(Math.max(Math.round(crop.x), 0), imageWidth)
   const y = Math.min(Math.max(Math.round(crop.y), 0), imageHeight)
   const width = Math.min(Math.round(crop.width), imageWidth - x)
   const height = Math.min(Math.round(crop.height), imageHeight - y)
 
-  if (width <= 0 || height <= 0) return null
+  if (width <= 0 || height <= 0) {
+    return null
+  }
   return { x, y, width, height }
 }

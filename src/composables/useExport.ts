@@ -26,7 +26,9 @@ export function useExport() {
 
   async function renderCanvas(): Promise<HTMLCanvasElement | null> {
     const source = editorStore.source
-    if (!source) return null
+    if (!source) {
+      return null
+    }
 
     const image = await loadImage(source.src)
     const crop = editorStore.editDocument.crop
@@ -40,7 +42,9 @@ export function useExport() {
     canvas.height = sh
 
     const ctx = canvas.getContext('2d')
-    if (!ctx) return null
+    if (!ctx) {
+      return null
+    }
 
     ctx.filter = editorStore.filterString
     ctx.drawImage(image, sx, sy, sw, sh, 0, 0, sw, sh)
@@ -49,14 +53,20 @@ export function useExport() {
 
   async function exportImage() {
     const source = editorStore.source
-    if (!source) return
+    if (!source) {
+      return
+    }
 
     isExporting.value = true
     try {
       const canvas = await renderCanvas()
-      if (!canvas) return
+      if (!canvas) {
+        return
+      }
       const blob = await canvasToBlob(canvas, 'image/png')
-      if (!blob) return
+      if (!blob) {
+        return
+      }
       downloadBlob(blob, `${stripExtension(source.name)}.png`)
     } finally {
       isExporting.value = false
@@ -65,7 +75,9 @@ export function useExport() {
 
   function exportJson() {
     const source = editorStore.source
-    if (!source) return
+    if (!source) {
+      return
+    }
 
     const payload = {
       version: editorStore.editDocument.version,
