@@ -63,6 +63,8 @@ importDialog.onChange(async (files) => {
           :disabled="!hasImage"
           thumb-label
           class="mb-2"
+          @start="editorStore.beginStroke()"
+          @end="editorStore.endStroke()"
           @update:model-value="(value: number) => editorStore.setAdjustment(control.key, value)"
         />
       </template>
@@ -82,6 +84,8 @@ importDialog.onChange(async (files) => {
           :disabled="!hasImage"
           thumb-label
           class="mb-2"
+          @start="editorStore.beginStroke()"
+          @end="editorStore.endStroke()"
           @update:model-value="(value: number) => editorStore.setFilter(filter.key, value)"
         />
       </template>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useFileDialog } from '@vueuse/core'
+import { onKeyStroke, useFileDialog } from '@vueuse/core'
 import { useEditorStore } from '../stores/editor'
 import { useNotificationStore } from '../stores/notification'
 import { useExport } from '../composables/useExport'
@@ -11,7 +11,8 @@ import ImageUploader from './ImageUploader.vue'
 import CropStage from './CropStage.vue'
 
 const editorStore = useEditorStore()
-const { source, editDocument, hasImage, isModified, filterString } = storeToRefs(editorStore)
+const { source, editDocument, hasImage, isModified, filterString, canUndo, canRedo } =
+  storeToRefs(editorStore)
 const { notify } = useNotificationStore()
 const { exportImage, exportJson, isExporting } = useExport()
 const { loadImageFile } = useLoadImageFile()
@@ -37,6 +38,18 @@ const zoomLabel = computed(() =>
 )
 
 watch(() => previewSrc.value, zoomFit)
+
+onKeyStroke(['z', 'Z'], (event) => {
+  if (!(event.ctrlKey || event.metaKey) || isCropping.value) {
+    return
+  }
+  event.preventDefault()
+  if (event.shiftKey) {
+    editorStore.redo()
+  } else {
+    editorStore.undo()
+  }
+})
 
 changeImageDialog.onChange((files) => {
   const file = files?.[0]
@@ -143,6 +156,16 @@ function applyCrop() {
           </template>
         </VTooltip>
         <VSpacer />
+        <VTooltip text="Undo (Ctrl+Z)" location="top">
+          <template #activator="{ props }">
+            <VBtn v-bind="props" icon="mdi-undo" variant="text" :disabled="!canUndo" @click="editorStore.undo()" />
+          </template>
+        </VTooltip>
+        <VTooltip text="Redo (Ctrl+Shift+Z)" location="top">
+          <template #activator="{ props }">
+            <VBtn v-bind="props" icon="mdi-redo" variant="text" :disabled="!canRedo" @click="editorStore.redo()" />
+          </template>
+        </VTooltip>
         <VTooltip text="Reset / view original" location="top">
           <template #activator="{ props }">
             <VBtn

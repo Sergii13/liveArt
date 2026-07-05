@@ -89,6 +89,9 @@ demonstrating the replay property required by the task.
   preview, crop coordinates and export stay sharp and consistent
 - **Preview zoom** — fit-to-screen by default, zoom buttons + mouse wheel (10%–800%). Zoom is
   view state, intentionally kept out of `EditDocument` (it is not an edit)
+- **Undo / redo** — snapshot history over `EditDocument` (Ctrl+Z / Ctrl+Shift+Z or toolbar
+  buttons). Snapshots are captured in store actions, one per slider gesture; a new edit clears
+  the redo branch; loading a new image clears the history
 - **Notifications** — success actions go through a snackbar queue; import errors use a
   dismissible alert so long messages can actually be read
 - **Adaptive layout** — controls live in a navigation drawer toggled from the header; on narrow
