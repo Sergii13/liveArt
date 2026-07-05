@@ -16,17 +16,10 @@ const { notify } = useNotificationStore()
 const { exportImage, exportJson, isExporting } = useExport()
 const { loadImageFile } = useLoadImageFile()
 const { previewSrc } = useCroppedPreview()
+const changeImageDialog = useFileDialog({ accept: 'image/*', multiple: false, reset: true })
 
 const isCropping = ref(false)
 const cropStageRef = ref<InstanceType<typeof CropStage> | null>(null)
-
-const changeImageDialog = useFileDialog({ accept: 'image/*', multiple: false, reset: true })
-
-changeImageDialog.onChange((files) => {
-  const file = files?.[0]
-  if (file) loadImageFile(file)
-})
-
 const zoom = ref<number | null>(null)
 
 const ZOOM_STEP = 1.25
@@ -43,6 +36,13 @@ const zoomLabel = computed(() =>
   zoom.value === null ? 'Fit' : `${Math.round(zoom.value * 100)}%`,
 )
 
+watch(() => previewSrc.value, zoomFit)
+
+changeImageDialog.onChange((files) => {
+  const file = files?.[0]
+  if (file) loadImageFile(file)
+})
+
 function zoomBy(factor: number) {
   const next = (zoom.value ?? 1) * factor
   zoom.value = Math.min(Math.max(next, ZOOM_MIN), ZOOM_MAX)
@@ -55,8 +55,6 @@ function zoomFit() {
 function onWheel(event: WheelEvent) {
   zoomBy(event.deltaY < 0 ? 1.1 : 1 / 1.1)
 }
-
-watch(() => previewSrc.value, zoomFit)
 
 function applyCrop() {
   const rect = cropStageRef.value?.getCropRect()

@@ -11,6 +11,7 @@ const editorStore = useEditorStore()
 const { editDocument, hasImage } = storeToRefs(editorStore)
 const { notify } = useNotificationStore()
 const { importSettings } = useImport()
+const importDialog = useFileDialog({ accept: 'application/json', multiple: false, reset: true })
 
 const importError = ref<string | null>(null)
 
@@ -24,8 +25,6 @@ const filters: { key: FilterName; label: string; icon: string }[] = [
   { key: 'grayscale', label: 'Grayscale', icon: 'mdi-invert-colors' },
   { key: 'sepia', label: 'Sepia', icon: 'mdi-image-filter-vintage' },
 ]
-
-const importDialog = useFileDialog({ accept: 'application/json', multiple: false, reset: true })
 
 importDialog.onChange(async (files) => {
   const file = files?.[0]
