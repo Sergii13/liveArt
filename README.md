@@ -107,26 +107,3 @@ demonstrating the replay property required by the task.
 - **Libraries do the plumbing, the domain stays hand-written** — cropperjs (crop UI), VueUse
   (file dialogs, base64), Vuetify (all UI); the edit model, pipeline and coordinate handling are
   the actual work
-
-## Project structure
-
-```
-src/
-├─ schemas/editDocument.ts    Zod schemas + inferred types (source of truth)
-├─ constants/                 default values, versioning, raster target
-├─ utils/                     pure helpers (document factory, image loading/rasterizing)
-├─ stores/
-│  ├─ editor.ts               source image + EditDocument + derived getters
-│  └─ notification.ts         snackbar queue
-├─ composables/
-│  ├─ useLoadImageFile.ts     file → source image (incl. SVG rasterization)
-│  ├─ useCroppedPreview.ts    derived preview base (original + crop)
-│  ├─ useExport.ts            canvas render → PNG + JSON download
-│  └─ useImport.ts            JSON file → validate → apply
-└─ components/
-   ├─ AppHeader.vue           app bar with drawer toggle
-   ├─ FilterPanel.vue         sliders + filters + import (drawer)
-   ├─ EditorStage.vue         preview, zoom, toolbar
-   ├─ CropStage.vue           cropperjs wrapper
-   └─ ImageUploader.vue       drop zone
-```
